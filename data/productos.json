@@ -1,0 +1,5 @@
+[
+    { "id": 1, "nombre": "Top deportivo", "precio": 8000 },
+    { "id": 2, "nombre": "Calza larga", "precio": 15000 },
+    { "id": 3, "nombre": "Short deportivo", "precio": 10000 }
+]

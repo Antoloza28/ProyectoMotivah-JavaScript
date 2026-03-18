@@ -1,90 +1,113 @@
-const productos = [
-    { nombre: "Remera", precio: 5000 },
-    { nombre: "Pantalón", precio: 12000 },
-    { nombre: "Zapatillas", precio: 25000 }
-];
+// =====================
+// VARIABLES
+// =====================
 
-let totalCompra = 0;
+let productos = [];
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+// =====================
+// SELECTORES
+// =====================
+
+const contenedorProductos = document.getElementById("productos");
+const contenedorCarrito = document.getElementById("carrito");
+const totalHTML = document.getElementById("total");
+
+// =====================
+// FETCH (JSON)
+// =====================
+
+fetch("../data/productos.json")
+    .then(response => response.json())
+    .then(data => {
+        productos = data;
+        renderProductos();
+    });
 
 // =====================
 // FUNCIONES
 // =====================
 
-// 1️⃣ Mostrar productos disponibles
-function mostrarProductos() {
-    let mensaje = "Productos disponibles:\n\n";
+function renderProductos() {
+    contenedorProductos.innerHTML = "";
 
-    for (let i = 0; i < productos.length; i++) {
-        mensaje += `${i + 1}. ${productos[i].nombre} - $${productos[i].precio}\n`;
+    productos.forEach(prod => {
+        const div = document.createElement("div");
+
+        div.innerHTML = `
+            ${prod.nombre} - $${prod.precio}
+            <button onclick="agregarAlCarrito(${prod.id})">Agregar</button>
+        `;
+
+        contenedorProductos.appendChild(div);
+    });
+}
+
+function agregarAlCarrito(id) {
+    const producto = productos.find(p => p.id === id);
+    carrito.push(producto);
+
+    guardarStorage();
+    renderCarrito();
+
+    Swal.fire({
+        title: "Agregado al carrito",
+        text: producto.nombre,
+        icon: "success"
+    });
+}
+
+function renderCarrito() {
+    contenedorCarrito.innerHTML = "";
+
+    carrito.forEach(prod => {
+        const li = document.createElement("li");
+        li.textContent = `${prod.nombre} - $${prod.precio}`;
+        contenedorCarrito.appendChild(li);
+    });
+
+    actualizarTotal();
+}
+
+function actualizarTotal() {
+    const total = carrito.reduce((acc, prod) => acc + prod.precio, 0);
+    totalHTML.textContent = `Total: $${total}`;
+}
+
+function guardarStorage() {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+function vaciarCarrito() {
+    carrito = [];
+    guardarStorage();
+    renderCarrito();
+}
+
+function finalizarCompra() {
+    if (carrito.length === 0) {
+        Swal.fire("El carrito está vacío");
+        return;
     }
 
-    mensaje += "\nIngresá el número del producto que querés comprar.";
-    return mensaje;
-}
+    Swal.fire({
+        title: "Compra realizada",
+        text: "Gracias por tu compra",
+        icon: "success"
+    });
 
-// 2️⃣ Calcular subtotal
-function calcularSubtotal(precio, cantidad) {
-    return precio * cantidad;
-}
-
-// 3️⃣ Mostrar resultado final
-function mostrarResultado(total) {
-    alert("🛒 Compra finalizada\n\nEl total a pagar es: $" + total);
-    console.log("Total final de la compra: $" + total);
+    vaciarCarrito();
 }
 
 // =====================
-// LÓGICA PRINCIPAL
+// EVENTOS
 // =====================
 
-function iniciarSimulador() {
-    
-    console.table(productos);
-
-    let continuar = true;
-
-    while (continuar) {
-        let opcion = prompt(mostrarProductos());
-
-        if (opcion === null) {
-            break;
-        }
-
-        opcion = parseInt(opcion);
-
-        if (opcion >= 1 && opcion <= productos.length) {
-            let cantidad = prompt(
-                "Ingresá la cantidad de " + productos[opcion - 1].nombre
-            );
-
-            cantidad = parseInt(cantidad);
-
-            if (cantidad > 0) {
-                let subtotal = calcularSubtotal(
-                    productos[opcion - 1].precio,
-                    cantidad
-                );
-
-                totalCompra += subtotal;
-
-                console.log(
-                    `Producto: ${productos[opcion - 1].nombre} | Cantidad: ${cantidad} | Subtotal: $${subtotal}`
-                );
-            } else {
-                alert("Cantidad inválida");
-            }
-        } else {
-            alert("Opción inválida");
-        }
-
-        continuar = confirm("¿Querés agregar otro producto?");
-    }
-
-    mostrarResultado(totalCompra);
-}
+document.getElementById("vaciar").addEventListener("click", vaciarCarrito);
+document.getElementById("comprar").addEventListener("click", finalizarCompra);
 
 // =====================
-// EJECUCIÓN
+// INICIO
 // =====================
 
-iniciarSimulador();
+renderCarrito();
