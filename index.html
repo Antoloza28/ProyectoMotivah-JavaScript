@@ -6,39 +6,42 @@
 <link rel="stylesheet" href="css/style.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
 
 <header>
-<h1>Motivah Shop</h1>
-<div id="contador-carrito">🛒 0</div>
+    <h1>Motivah Shop</h1>
+    <div id="contador-carrito">🛒 0</div>
 </header>
 
 <main>
 
 <section>
-<h2>Productos</h2>
-<div id="productos" class="grid-productos"></div>
+    <h2>Productos</h2>
+
+    <input type="text" id="buscador" placeholder="Buscar producto...">
+
+    <div id="productos" class="grid-productos"></div>
 </section>
 
 <section class="carrito">
-<h2>Carrito</h2>
-<ul id="carrito"></ul>
-<p id="total">Total: $0</p>
+    <h2>Carrito</h2>
+    <ul id="carrito"></ul>
+    <p id="total">Total: $0</p>
 
-<button id="comprar">Finalizar compra</button>
-<button id="vaciar">Vaciar carrito</button>
+    <button id="comprar">Finalizar compra</button>
+    <button id="vaciar">Vaciar carrito</button>
 </section>
 
 <section>
-<h2>Datos del comprador</h2>
+    <h2>Datos del comprador</h2>
 
-<form id="formulario" class="form" style="display:none">
-<input type="text" id="nombre" placeholder="Nombre completo" required>
-<input type="email" id="email" placeholder="Email" required>
-<input type="text" id="direccion" placeholder="Dirección de envío" required>
-<button type="submit">Confirmar compra</button>
-</form>
-
+    <form id="formulario" class="form" style="display:none">
+        <input type="text" id="nombre" placeholder="Nombre completo" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="direccion" placeholder="Dirección" required>
+        <button type="submit">Confirmar compra</button>
+    </form>
 </section>
 
 </main>
